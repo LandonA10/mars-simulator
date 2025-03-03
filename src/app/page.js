@@ -7,7 +7,7 @@ export default function Simulator(){
 
   //states
   const [day, setDay] = useState(0);
-  const [strength, setStrength] = useState(100);
+  const [strength, setStrength] = useState(10000);
   const [pressure, setPressure] = useState(Math.floor((Math.random() * 7) + 1));
   const [temperature, setTemperature] = useState(70)
   const [season, setSeason] = useState("Spring")
@@ -19,6 +19,7 @@ export default function Simulator(){
     {
       id: 1, name: "Box Bio-Dome", strength: strength
     }
+    //2nd round bio dome, strength 15,000
   ];
 
   //const object of conditions
@@ -28,59 +29,7 @@ export default function Simulator(){
     season: season,
     radiation: radiation
   };
-
   
-  //useEffect here for funzies
-  // useEffect(() =>{
-  //   console.log("A day has passed");
-  //   //code that runs
-  //   return (() => {
-  //     console.log("New Biome Strength", biodome[0].strength);
-  //   })
-  // }, [day]);
-   //what useeffect listens too 
-  
-   //Strength variable that is manipulated for strength of dome
-  var newStrength;
-
-  //increases day and changes strength depending on pressure 
-  function increaseDay(){
-    
-    //increases day
-    setDay(prevDay => prevDay + 1);
-    
-    //creates new strength
-    newStrength = biodome[0].strength - conditions.pressure;
-
-    //if strength goes below 0, sets strgth to 0 and returns
-    if (newStrength <= 0){
-      setStrength(0);
-      return;
-    }
-    
-    //otherwise, sets strgth
-    setStrength(newStrength);
-    
-  }
-
-  //decreases day and updates strght
-  function decreaseDay(){
-
-    //if day < 0, returns
-    if (day <= 0){
-      return;
-    }
-
-    //sets day
-    setDay(prevDay => prevDay - 1);
-
-    //rebuilds strgth
-    newStrength = biodome[0].strength + conditions.pressure;
-    
-    //sets strgth
-    setStrength(newStrength);
-  }
-
   function runSim(){
 
     var newPressure;
@@ -90,29 +39,24 @@ export default function Simulator(){
     
     createConditions();
     var damage = temperature / 4 + pressure + radiation;
-    // console.log("init str", updatedStrength);
     while (updatedStrength > 0){
       newPressure = Math.floor((Math.random() * 8) + 1);
-      // console.log("new pressure", newPressure);
-      // updatedStrength -= (radiation + (temperature / 2) + (pressure / 2));
+
       updatedStrength -= damage;
-      // console.log("Mathsss", radiation + (temperature / 2) + (pressure / 2));
-      // console.log("updated stregnth", updatedStrength);
+
       days++;
     };
 
     if (updatedStrength <= 0){
       updatedStrength = 0;
     }
-    // console.log("updated strength" , updatedStrength, "days", days);
     setStrength(updatedStrength);
     setDay(days);
-    // console.log("strength" , strength);
   }
 
   function reset(){
     setDay(0);
-    setStrength(100);
+    setStrength(10000);
     seasonChoose = 0;
     damage = 0;
   }
@@ -121,7 +65,6 @@ export default function Simulator(){
 
     
     seasonChoose = Math.floor(Math.random() * 4)
-    // console.log("Whcih season", season);
     setRadiation((Math.random() * 5) + 1);
     console.log(seasonChoose == 0, seasonChoose == 1, seasonChoose == 2, seasonChoose == 3);
     let seasonvar = ""
@@ -155,17 +98,11 @@ export default function Simulator(){
       setSeason("Winter");
       console.log("Conditions: Winter", temperature, pressure);
     }
-    // setSeason("")
-    // console.log(season);
+
 }
 
   return (
     <>
-      {/* <button onClick={decreaseDay}>Remove Day</button>
-      <span>{day}</span>
-      <button onClick={increaseDay}>Add Day</button> */}
-
-      
       <button onClick={runSim}>Start</button>
       <button onClick={reset}>Reset</button>
       <div className="domeStats">
@@ -185,10 +122,6 @@ export default function Simulator(){
     </>
   );
 }
-
-
-
-//use state updated state - day, useeffect is like side effects- damage to dome
 
 
 
