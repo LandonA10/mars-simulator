@@ -5,15 +5,19 @@ import React, { useEffect, useState } from "react";
 
 export default function Simulator(){
 
+  //vars
+  let domeStrength = 10000;
+  let seasonChoose;
+
   //states
   const [day, setDay] = useState(0);
-  const [strength, setStrength] = useState(10000);
+  const [strength, setStrength] = useState(domeStrength);
   const [pressure, setPressure] = useState(Math.floor((Math.random() * 7) + 1));
   const [temperature, setTemperature] = useState(70)
   const [season, setSeason] = useState("Spring")
   const [radiation, setRadiation] = useState(0);
 
-  let seasonChoose;
+  
   //const array with different dome designs
   const biodome = [
     {
@@ -30,59 +34,72 @@ export default function Simulator(){
     radiation: radiation
   };
   
+  //main simulator function
   function runSim(){
 
-    var newPressure;
+    //vars for updated states
     var updatedStrength = strength;
     var days = 0;
-    console.log("updatedSterngth" , updatedStrength);
     
+    //calls createConditions function to create new weather conditions
     createConditions();
     var damage = temperature / 4 + pressure + radiation;
+
+    //while loop until strength is below 0
     while (updatedStrength > 0){
-      newPressure = Math.floor((Math.random() * 8) + 1);
 
+      //updates strength and days
       updatedStrength -= damage;
-
       days++;
+
     };
 
+    //if strenght is less than 0, sets it to 0 
     if (updatedStrength <= 0){
+
       updatedStrength = 0;
+
     }
+
+    //sets new values to states
     setStrength(updatedStrength);
     setDay(days);
+
   }
 
+  //resets everything back 
   function reset(){
+
     setDay(0);
-    setStrength(10000);
+    setStrength(domeStrength);
+
     seasonChoose = 0;
     damage = 0;
+
   }
 
+  //createConditions function to create random conditions
   function createConditions(){
 
-    
-    seasonChoose = Math.floor(Math.random() * 4)
-    setRadiation((Math.random() * 5) + 1);
-    console.log(seasonChoose == 0, seasonChoose == 1, seasonChoose == 2, seasonChoose == 3);
-    let seasonvar = ""
+    //chooses random season
+    seasonChoose = Math.floor(Math.random() * 4) // set 0 for spring, 1 for summer, 2 for fall, 3 for winter
+    setRadiation((Math.random() * 5) + 1); //random radiation
+
+    //conditional statements to check which season has been chosen
     if (seasonChoose === 0 ){
+
+      //sets new conditions to states
       setTemperature((Math.random() * 70) + 10);
       setPressure((Math.random() * 2) + 5);
       setSeason("Spring");
 
-
-      console.log("Conditions: Spring", temperature, pressure);
     }
     else if (seasonChoose === 1){
+
       setTemperature((Math.random() * 60) + 10);
       setPressure((Math.random() * 2) + 5);
       setSeason("Summer");
 
-
-      console.log("Conditions: Summer", temperature, pressure);
     }
     else if (seasonChoose === 2){
       
@@ -90,34 +107,41 @@ export default function Simulator(){
       setPressure((Math.random() * 1) + 5);
       setSeason("Fall");
 
-      console.log("Conditions: Fall", temperature, pressure);
     }
     else {
+
       setTemperature((Math.random() * 70) + 30);
       setPressure((Math.random() * 1) + 5);
       setSeason("Winter");
-      console.log("Conditions: Winter", temperature, pressure);
+
     }
 
 }
-
+  //html for webpage
   return (
     <>
+      {/* buttons to start and reset sim */}
       <button onClick={runSim}>Start</button>
       <button onClick={reset}>Reset</button>
+
+      {/* div with dome stats */}
       <div className="domeStats">
+
         <p>Dome Name: {biodome[0].name}</p>
         <p>Dome Strength: {biodome[0].strength}</p> 
         
       </div>
 
+      {/* div with final stats from sim for funzies */}
       <div className="EnviromentDiv">
+
         <p>Day: {day}</p>
         <p>The Dome lasted for {day} days</p>
         <p>Pressure: {conditions.pressure}</p>
-        <p>Season: : {season}</p>
+        <p>Season: {season}</p>
         <p>Temp: {temperature}</p>
         <p>Radi: {radiation}</p>
+
       </div>
     </>
   );
